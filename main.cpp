@@ -4,7 +4,7 @@
 void draw() {
 	graphics::Brush br;
 	br.outline_opacity = 0.0f;
-	br.texture = ASSET_PATH + std::string("checkersboard.png");
+	br.texture = ASSET_PATH + std::string("board.png");
 	graphics::drawRect(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, CANVAS_WIDTH, CANVAS_HEIGHT, br);
 }
 
