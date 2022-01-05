@@ -1,7 +1,9 @@
 #include "game.h"
 #include "defines.h"
 #include <sgg/graphics.h>
-
+Game::Game()
+{
+}
 void Game::draw()
 {
 	graphics::Brush br;
@@ -20,6 +22,7 @@ Game* Game::getInstance()
 	return m_instance;
 }
 
+
 void Game::update()
 {
 	for (auto pawn : m_pawns) {
@@ -29,15 +32,36 @@ void Game::update()
 
 void Game::init()
 {
-	
+	float matrx[8] = { CANVAS_WIDTH / 16.0f,CANVAS_WIDTH / 5.28f,CANVAS_WIDTH / 3.21f,CANVAS_WIDTH / 2.28f,CANVAS_WIDTH / 1.78f,CANVAS_WIDTH / 1.46f,CANVAS_WIDTH / 1.235f,CANVAS_WIDTH / 1.07f };
+	float matry[8] = { CANVAS_HEIGHT / 1.07f,CANVAS_HEIGHT / 1.235f,CANVAS_HEIGHT / 1.46f,CANVAS_HEIGHT / 1.78f,CANVAS_HEIGHT / 2.28f,CANVAS_HEIGHT / 3.21f,CANVAS_HEIGHT / 5.28f,CANVAS_HEIGHT / 16.0f };
+		for (int i = 0; i < 8; i=i+2) {
+			for (int j = 0; j < 3; j=j+2) {
+				Pawn* p = new Pawn();
+				m_pawns.push_front(p);
+				p->setPosX(matrx[i]);
+				p->setPosY(matry[j]);
+			}
+		}
+		for (int i = 1; i <= 8; i = i + 2) {
 			Pawn* p = new Pawn();
 			m_pawns.push_front(p);
-			p->setPosX(CANVAS_WIDTH / 15.0f);
-			p->setPosY(CANVAS_HEIGHT / 1.07f);
-			Pawn* p2 = new Pawn();
-			m_pawns.push_front(p2);
-			p2->setPosX(CANVAS_WIDTH / 3.2f);
-			p2->setPosY(CANVAS_HEIGHT / 1.07f);
+			p->setPosX(matrx[i]);
+			p->setPosY(matry[1]);
+		}
+		for (int i = 1; i < 8; i = i + 2) {
+			for (int j = 7; j >4; j = j - 2) {
+				Pawn* p = new Pawn();
+				m_pawns.push_front(p);
+				p->setPosX(matrx[i]);
+				p->setPosY(matry[j]);
+			}
+		}
+		for (int i = 0; i < 8; i = i + 2) {
+			Pawn* p = new Pawn();
+			m_pawns.push_front(p);
+			p->setPosX(matrx[i]);
+			p->setPosY(matry[6]);
+		}
 }
 
 Game::~Game()
