@@ -18,9 +18,21 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="game.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pawn.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="defines.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pawn.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

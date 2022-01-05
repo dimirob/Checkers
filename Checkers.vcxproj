@@ -149,10 +149,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="game.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="pawn.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="defines.h" />
+    <ClInclude Include="game.h" />
+    <ClInclude Include="pawn.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
