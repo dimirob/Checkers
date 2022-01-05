@@ -29,14 +29,15 @@ void Game::update()
 
 void Game::init()
 {
-	for (int i = 0; i < 4; i++) {
-		for (int j = 0; j < 2; j++) {
+	
 			Pawn* p = new Pawn();
 			m_pawns.push_front(p);
-			p->setPosX(CANVAS_WIDTH * i / 4.0f);
-			p->setPosY(CANVAS_HEIGHT * j / 2.0f);
-		}
-	}
+			p->setPosX(CANVAS_WIDTH / 15.0f);
+			p->setPosY(CANVAS_HEIGHT / 1.07f);
+			Pawn* p2 = new Pawn();
+			m_pawns.push_front(p2);
+			p2->setPosX(CANVAS_WIDTH / 3.2f);
+			p2->setPosY(CANVAS_HEIGHT / 1.07f);
 }
 
 Game::~Game()
