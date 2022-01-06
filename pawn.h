@@ -3,20 +3,17 @@
 class Pawn {
 	float m_pos[2];
 	float m_color[3];
-<<<<<<< Updated upstream
-=======
 
 	bool m_highlighted = false;
 	bool m_active = false;
->>>>>>> Stashed changes
+
 
 public:
 	void draw();
 	void update();
-<<<<<<< Updated upstream
-=======
+
 	Pawn();
->>>>>>> Stashed changes
+
 
 	float getPosX() { return m_pos[0]; }
 	float getPosY() { return m_pos[1]; }
