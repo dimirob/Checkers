@@ -4,3 +4,4 @@
 constexpr auto ASSET_PATH = ".\\assets\\";
 #define PLAYER_SIZE 1.5f
 #define BOARD_TABLEY {CANVAS_HEIGHT / 1.07f}
+#define SETCOLOR(c,r,g,b){c[0]=r;c[1]=g;c[2]=b;}
