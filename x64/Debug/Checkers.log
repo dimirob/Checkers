@@ -1,3 +1,15 @@
+<<<<<<< Updated upstream
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(499,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
   main.cpp
   Checkers.vcxproj -> D:\cpp\Checkers\bin\Checkersd.exe
+=======
+﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(496,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
+  game.cpp
+C:\Users\user\Desktop\Checkers\defines.h(17,13): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+C:\Users\user\Desktop\Checkers\game.cpp(40,41): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\user\Desktop\Checkers\game.cpp(41,41): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  main.cpp
+C:\Users\user\Desktop\Checkers\defines.h(17,13): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+  Generating Code...
+  Checkers.vcxproj -> C:\Users\user\Desktop\Checkers\bin\Checkersd.exe
+>>>>>>> Stashed changes

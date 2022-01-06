@@ -1,6 +1,7 @@
 #include "game.h"
 #include "defines.h"
 #include <sgg/graphics.h>
+
 Game::Game()
 {
 }
@@ -9,8 +10,11 @@ void Game::draw()
 	graphics::Brush br;
 	br.outline_opacity = 0.0f;
 	br.texture = ASSET_PATH + std::string("Board.png");
+	SETCOLOR(br.fill_color, 1.0f, 1.0f, 1.0f);
 	graphics::drawRect(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, CANVAS_WIDTH, CANVAS_HEIGHT, br);
-	for (auto pawn : m_pawns) {
+	
+	for (auto pawn : m_pawns)
+	{
 		pawn->draw();
 	}
 }
@@ -28,6 +32,39 @@ void Game::update()
 	for (auto pawn : m_pawns) {
 		pawn->update();
 	}
+
+	// obtain mouse state
+	graphics::MouseState ms;
+	graphics::getMouseState(ms);
+
+	float mx = graphics::windowToCanvasX(ms.cur_pos_x);
+	float my = graphics::windowToCanvasY(ms.cur_pos_y);
+
+	// highlight pawn
+	Pawn* cur_pawn = nullptr;
+	for (auto p : m_pawns)
+	{
+		if (p->contains(mx, my))
+		{
+			p->setHighlight(true);
+			cur_pawn = p;
+		}
+		else
+			p->setHighlight(false);
+	}
+
+	// ativate pawn
+	if (ms.button_left_pressed && cur_pawn) // 1:34:40
+	{
+		m_active_pawn = cur_pawn;
+		m_active_pawn->setActive(true);
+		for (auto p : m_pawns)
+		{
+			if (p != m_active_pawn)
+				p->setActive(false);
+		}
+	}
+
 }
 
 void Game::init()
