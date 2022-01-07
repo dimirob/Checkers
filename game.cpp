@@ -48,7 +48,7 @@ void Game::update()
 	}
 
 	// ativate pawn
-	if (ms.button_left_pressed && cur_pawn) // 1:34:40
+	if (ms.button_left_pressed && cur_pawn) 
 	{
 		m_active_pawn = cur_pawn;
 		m_active_pawn->setActive(true);
@@ -63,8 +63,6 @@ void Game::update()
 
 void Game::init()
 {
-	float matrx[8] = { CANVAS_WIDTH / 16.0f,CANVAS_WIDTH / 5.28f,CANVAS_WIDTH / 3.21f,CANVAS_WIDTH / 2.28f,CANVAS_WIDTH / 1.78f,CANVAS_WIDTH / 1.46f,CANVAS_WIDTH / 1.235f,CANVAS_WIDTH / 1.07f };
-	float matry[8] = { CANVAS_HEIGHT / 1.07f,CANVAS_HEIGHT / 1.235f,CANVAS_HEIGHT / 1.46f,CANVAS_HEIGHT / 1.78f,CANVAS_HEIGHT / 2.28f,CANVAS_HEIGHT / 3.21f,CANVAS_HEIGHT / 5.28f,CANVAS_HEIGHT / 16.0f };
 		for (int i = 0; i < 8; i=i+2) {
 			for (int j = 0; j < 3; j=j+2) {
 				Pawn* p = new Pawn(0);

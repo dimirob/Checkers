@@ -28,7 +28,7 @@ Pawn::Pawn(int i)
 	this->setPosY(0);
 	this->team = i;
 	if (i == 0) {
-		SETCOLOR(m_color, 1.0f, 0, 0); // sxolio
+		SETCOLOR(m_color, 1.0f, 0, 0); 
 	}
 	else SETCOLOR(m_color, 0, 0, 1.0f);
 }
