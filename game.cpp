@@ -28,6 +28,37 @@ void Game::update()
 	for (auto pawn : m_pawns) {
 		pawn->update();
 	}
+	graphics::MouseState ms;
+	graphics::getMouseState(ms);
+
+	float mx = graphics::windowToCanvasX(ms.cur_pos_x);
+	float my = graphics::windowToCanvasY(ms.cur_pos_y);
+
+	// highlight pawn
+	Pawn* cur_pawn = nullptr;
+	for (auto p : m_pawns)
+	{
+		if (p->contains(mx, my))
+		{
+			p->setHighlight(true);
+			cur_pawn = p;
+		}
+		else
+			p->setHighlight(false);
+	}
+
+	// ativate pawn
+	if (ms.button_left_pressed && cur_pawn) // 1:34:40
+	{
+		m_active_pawn = cur_pawn;
+		m_active_pawn->setActive(true);
+		for (auto p : m_pawns)
+		{
+			if (p != m_active_pawn)
+				p->setActive(false);
+		}
+	}
+
 }
 
 void Game::init()
