@@ -1,5 +1,6 @@
 #pragma once
 #include <list>
+#include <iostream>
 #include "pawn.h"
 #include "defines.h"
 #include "move.h"
@@ -18,6 +19,7 @@ protected:
 	std::list<Pawn*> m_pawns;
 	std::list<Pawn*> m_att_pawns;
 	std::list<Move*> m_moves;
+	std::list<Pawn*>::iterator it;
 	Pawn* m_active_pawn = nullptr;
 	game_state_t m_state;
 	

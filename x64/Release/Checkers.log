@@ -1,13 +1,10 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(499,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
   game.cpp
-D:\cpp\Checkers\defines.h(16,13): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-D:\cpp\Checkers\game.cpp(70,41): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 D:\cpp\Checkers\game.cpp(71,41): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-  main.cpp
-D:\cpp\Checkers\defines.h(16,13): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+D:\cpp\Checkers\game.cpp(72,41): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   Generating code
-  2 of 307 functions ( 0.7%) were compiled, the rest were copied from previous compilation.
+  1 of 326 functions ( 0.3%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    3 functions had inline decision re-evaluated but remain unchanged
+    1 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   Checkers.vcxproj -> D:\cpp\Checkers\bin\Checkers.exe

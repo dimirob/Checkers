@@ -65,6 +65,7 @@ void Game::update()
 		}
 		
 	}
+	it = m_pawns.begin();
 	graphics::MouseState ms;
 	graphics::getMouseState(ms);
 	float mx = graphics::windowToCanvasX(ms.cur_pos_x);
@@ -116,8 +117,8 @@ void Game::update()
 				}
 				if (matpawn[cur_pawn->getmoveRx()][cur_pawn->getmoveRy()] == nullptr) {
 					move = new Move(getMatx(cur_pawn->getmoveRx()), getMaty(cur_pawn->getmoveRy()), cur_pawn->getmoveRx(), cur_pawn->getmoveRy());
-					move->draw();
 					m_moves.push_back(move);
+					move->draw();
 				}
 			}
 			m_state = STATE_MOVER;//change gamestate to move
@@ -190,6 +191,7 @@ void Game::update()
 		}
 		if (ms.button_left_pressed && curr_move) {
 			m_state = STATE_BLUE;
+			
 			matpawn[cur_pawn->getMatposX()][cur_pawn->getMatposY()] = nullptr;
 			cur_pawn->setPosX(curr_move->getX());
 			cur_pawn->setPosY(curr_move->getY());
@@ -220,6 +222,7 @@ void Game::update()
 		}
 		if (ms.button_left_pressed && curr_move) {
 			m_state = STATE_RED;
+			
 			matpawn[cur_pawn->getMatposX()][cur_pawn->getMatposY()] = nullptr;
 			cur_pawn->setPosX(curr_move->getX());
 			cur_pawn->setPosY(curr_move->getY());
@@ -268,19 +271,24 @@ void Game::update()
 			}
 			else {//pawn is in the middle
 				Move* att_move = curr_att_pawn->getAttMoveR();
-				if (matpawn[att_move->getmatx()][att_move->getmaty()] == nullptr) {//check where the pawn can attack
-					att_move->setX(getMatx(att_move->getmatx()));
-					att_move->setY(getMaty(att_move->getmaty()));
-					m_moves.push_back(att_move);
+				if (matpawn[att_move->getmatx()][att_move->getmaty()] == nullptr&&matpawn[att_move->getmatx()-1][att_move->getmaty()-1]!=nullptr) {//check where the pawn can attack
+					if (matpawn[att_move->getmatx() - 1][att_move->getmaty() - 1]->getTeam() != curr_att_pawn->getTeam()) {//last check
+						att_move->setX(getMatx(att_move->getmatx()));
+						att_move->setY(getMaty(att_move->getmaty()));
+						m_moves.push_back(att_move);
+					}
 				}
 				att_move = curr_att_pawn->getAttMoveL();
-				if (matpawn[att_move->getmatx()][att_move->getmaty()] == nullptr) {
-					att_move->setX(getMatx(att_move->getmatx()));
-					att_move->setY(getMaty(att_move->getmaty()));
-					m_moves.push_back(att_move);
+				if (matpawn[att_move->getmatx()][att_move->getmaty()] == nullptr&& matpawn[att_move->getmatx() + 1][att_move->getmaty() - 1]!=nullptr) {//check where the pawn can attack
+					if (matpawn[att_move->getmatx() + 1][att_move->getmaty() - 1]->getTeam() != curr_att_pawn->getTeam()) {//last check
+						att_move->setX(getMatx(att_move->getmatx()));
+						att_move->setY(getMaty(att_move->getmaty()));
+						m_moves.push_back(att_move);
+					}
 				}
 			}
-			m_state = STATE_MOVER;
+			m_state=STATE_CHOOSE_ATTACKMOVER;
+			cur_pawn = curr_att_pawn;
 		}
 		m_att_pawns.clear();
 	}
@@ -314,22 +322,123 @@ void Game::update()
 			}
 			else {//pawn is in the middle
 				Move* att_move = curr_att_pawn->getAttMoveR();
-				if (matpawn[att_move->getmatx()][att_move->getmaty()] == nullptr) {//check if the pawn can attack right side
-					att_move->setX(getMatx(att_move->getmatx()));
-					att_move->setY(getMaty(att_move->getmaty()));
-					m_moves.push_back(att_move);
+				if (matpawn[att_move->getmatx()][att_move->getmaty()] == nullptr && matpawn[att_move->getmatx() - 1][att_move->getmaty() + 1] != nullptr) {//check where the pawn can attack
+					if (matpawn[att_move->getmatx() - 1][att_move->getmaty() + 1]->getTeam() != curr_att_pawn->getTeam()) {//last check
+						att_move->setX(getMatx(att_move->getmatx()));
+						att_move->setY(getMaty(att_move->getmaty()));
+						m_moves.push_back(att_move);
+					}
 				}
 				att_move = curr_att_pawn->getAttMoveL();
-				if (matpawn[att_move->getmatx()][att_move->getmaty()] == nullptr) {//check if the pawn can attack left side
-					att_move->setX(getMatx(att_move->getmatx()));
-					att_move->setY(getMaty(att_move->getmaty()));
-					m_moves.push_back(att_move);
+				if (matpawn[att_move->getmatx()][att_move->getmaty()] == nullptr && matpawn[att_move->getmatx() + 1][att_move->getmaty() + 1] != nullptr) {//check where the pawn can attack
+					if (matpawn[att_move->getmatx() + 1][att_move->getmaty() + 1]->getTeam() != curr_att_pawn->getTeam()) {//last check
+						att_move->setX(getMatx(att_move->getmatx()));
+						att_move->setY(getMaty(att_move->getmaty()));
+						m_moves.push_back(att_move);
+					}
 				}
 			}
-			m_state = STATE_MOVEB;
+			m_state = STATE_CHOOSE_ATTACKMOVEB;
+			cur_pawn = curr_att_pawn;
+		}
+		m_att_pawns.clear();
+	}
+	else if (m_state == STATE_CHOOSE_ATTACKMOVER) {//red chooses move to attack
+		Move* curr_move = nullptr;
+		for (auto m : m_moves) {
+			if (m->contains(mx, my)) {
+				m->sethighlight(true);
+				curr_move = m;
+			}
+			else {
+				m->sethighlight(false);
+			}
+		}
+		if (ms.button_left_pressed && curr_move) {
+			bool left, right = false;//attacked left or right?
+			int attmove = cur_pawn->getMatposX();//save previous move to see where we attacked 
+			m_state = STATE_BLUE;
+			matpawn[cur_pawn->getMatposX()][cur_pawn->getMatposY()] = nullptr;
+			cur_pawn->setPosX(curr_move->getX());
+			cur_pawn->setPosY(curr_move->getY());
+			cur_pawn->setMatposx(curr_move->getmatx());
+			cur_pawn->setMatposy(curr_move->getmaty());
+			matpawn[cur_pawn->getMatposX()][cur_pawn->getMatposY()] = cur_pawn;
+			m_moves.clear();
+			cur_pawn->setActive(false);
+			cur_pawn->setHighlight(false);// pawn moved
+			if (cur_pawn->getMatposX() > attmove) { right = true; }//attacked right
+			else { left = true; }//attacked left
+			if (right) {
+				while (it != m_pawns.end()) {
+					if (*it == matpawn[cur_pawn->getMatposX() - 1][cur_pawn->getMatposY() - 1]) {
+						m_pawns.erase(it); //erase enemy pawn
+						matpawn[cur_pawn->getMatposX() - 1][cur_pawn->getMatposY() - 1] = nullptr;
+						break;
+					}
+					++it;
+				}
+			}
+			else {
+				while (it != m_pawns.end()) {
+					if (*it == matpawn[cur_pawn->getMatposX() + 1][cur_pawn->getMatposY() - 1]) {
+						m_pawns.erase(it);  //erase enemy pawn
+						matpawn[cur_pawn->getMatposX() + 1][cur_pawn->getMatposY() - 1] = nullptr;
+						break;
+					}
+					++it;
+				}
+			}
 		}
 	}
-	
+	else if (m_state == STATE_CHOOSE_ATTACKMOVEB) {//blue chooses move to attack
+		Move* curr_move = nullptr;
+		for (auto m : m_moves) {
+			if (m->contains(mx, my)) {
+				m->sethighlight(true);
+				curr_move = m;
+			}
+			else {
+				m->sethighlight(false);
+			}
+		}
+		if (ms.button_left_pressed && curr_move) {
+			bool left, right = false;//attacked left or right?
+			int attmove = cur_pawn->getMatposX();//save previous move to see where we attacked 
+			m_state = STATE_RED;
+			matpawn[cur_pawn->getMatposX()][cur_pawn->getMatposY()] = nullptr;
+			cur_pawn->setPosX(curr_move->getX());
+			cur_pawn->setPosY(curr_move->getY());
+			cur_pawn->setMatposx(curr_move->getmatx());
+			cur_pawn->setMatposy(curr_move->getmaty());
+			matpawn[cur_pawn->getMatposX()][cur_pawn->getMatposY()] = cur_pawn;
+			m_moves.clear();
+			cur_pawn->setActive(false);
+			cur_pawn->setHighlight(false);//pawn moved
+			if (cur_pawn->getMatposX() > attmove) { right = true; }//attacked right
+			else { left = true; }//attacked left
+			if (right) {
+				while (it != m_pawns.end()) {
+					if (*it == matpawn[cur_pawn->getMatposX() - 1][cur_pawn->getMatposY() + 1]) {
+						m_pawns.erase(it); //erase enemy pawn
+						matpawn[cur_pawn->getMatposX() - 1][cur_pawn->getMatposY() + 1] = nullptr;
+						break;
+					}
+					++it;
+				}
+			}
+			else {
+				while (it != m_pawns.end()) {
+					if (*it == matpawn[cur_pawn->getMatposX() + 1][cur_pawn->getMatposY() + 1]) {
+						m_pawns.erase(it); //erase enemy pawn
+						matpawn[cur_pawn->getMatposX() + 1][cur_pawn->getMatposY() + 1] = nullptr;
+						break;
+					}
+					++it;
+				}
+			}
+		}
+	}
 }
 
 void Game::init()
