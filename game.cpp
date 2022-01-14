@@ -32,6 +32,17 @@ void Game::draw()
 		return;
 	}
 
+	if (m_state == STATE_LAST_SCREEN)
+	{
+		graphics::Brush br;
+		br.texture = std::string(ASSET_PATH) + "last.png";
+		br.outline_opacity = 0.0f;
+		
+		SETCOLOR(br.fill_color, 0.7f, 0.7f, 0.7f);
+		graphics::drawRect(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, CANVAS_WIDTH, CANVAS_HEIGHT, br);
+		return;
+	}
+
 	
 	br.outline_opacity = 0.0f;
 	br.texture = ASSET_PATH + std::string("Board.png");
@@ -73,8 +84,7 @@ bool Game::isLeftSide(int x)
 
 
 void Game::update()
-{ 
-
+{
 	if (m_state == STATE_INIT)
 	{
 		return;
@@ -94,22 +104,45 @@ void Game::update()
 		{
 			m_state = STATE_RED;
 		}
-		
 		return;
 	}
 
+	if (m_state == STATE_LAST_SCREEN)
+	{
+		if (graphics::getKeyState(graphics::SCANCODE_R))
+		{
+			m_pawns.clear();
+			init();
+			m_state = STATE_START_SCREEN;
+		}
+		return;
+	}
+
+	// del:
+	/*if (graphics::getGlobalTime() > 6000)
+		if (graphics::getGlobalTime() < 12000)
+			m_state = STATE_LAST_SCREEN;*/
+	// _______________________________
+
 	for (auto pawn : m_pawns) {
 		pawn->update();
-		/*
-		if (pawn->getMatposX() == CANVAS_WIDTH / 16.0f)
-		{
-			std::cout << "empikennnnnnnn";
-		}
-		*/
 	}
 	for (auto moves : m_moves) {
 		moves->update();
 	}
+
+	// del:
+	for (auto pawn : m_pawns) 
+	{
+		float y = pawn->getMatposY();
+		if (y < CANVAS_HEIGHT / 1.235f - 4.0f && m_state == STATE_BLUE)
+		{
+			m_state = STATE_LAST_SCREEN;
+		}
+	}
+	// _______________________________
+
+	
 	for (auto pawn : m_pawns)
 	{
 		bool canattack = pawn->hasAttackingPawn(matpawn);
@@ -391,7 +424,7 @@ void Game::update()
 
 void Game::init()
 {
-	m_state = STATE_BLUE;
+	// m_state = STATE_BLUE; // del
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
 			matpawn[i][j] = nullptr;
@@ -407,6 +440,7 @@ void Game::init()
 			matpawn[i][j] = p;//update pawn matrix
 		}
 	}
+
 	for (int i = 1; i <= 8; i = i + 2) {
 		Pawn* p = new Pawn(0,i,1);
 		m_pawns.push_front(p);
@@ -432,7 +466,7 @@ void Game::init()
 
 	graphics::preloadBitmaps(ASSET_PATH);
 
-	sleep(2000);
+	// sleep(2000);
 
 }
 
