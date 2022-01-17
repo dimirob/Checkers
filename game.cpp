@@ -48,6 +48,7 @@ bool Game::isLeftSide(int x)
 
 void Game::update()
 { 
+
 	for (auto pawn : m_pawns) {
 		pawn->update();
 	}
@@ -56,11 +57,11 @@ void Game::update()
 	}
 	for (auto pawn : m_pawns) {
 		bool canattack = pawn->hasAttackingPawn(matpawn);
-		if (canattack && pawn->getTeam()==0&&m_state==STATE_RED) {//red pawn can attack and it is its turn
+		if((canattack && pawn->getTeam()==0&&m_state==STATE_RED)) {//red pawn can attack and it is its turn
 			m_state = STATE_ATTACKR;
 
 		}
-		else if (canattack && pawn->getTeam() == 1&&m_state==STATE_BLUE) {//blue pawn can attack and it is its turn
+		else if ((canattack && pawn->getTeam() == 1&&m_state==STATE_BLUE)) {//blue pawn can attack and it is its turn
 			m_state = STATE_ATTACKB;
 		}
 		
@@ -247,6 +248,7 @@ void Game::update()
 			if (pawn->hasAttackingPawn(matpawn)&&pawn->getTeam()==0) {//place all red pawns that can attack in a list
 				m_att_pawns.push_back(pawn);
 			}
+			if (pawn->hasAttacked() == true) { m_att_pawns.clear(); m_att_pawns.push_back(pawn); break; }//multiple move
 		}
 		for (auto p : m_att_pawns) {
 			if (p->contains(mx, my)) {
@@ -298,6 +300,7 @@ void Game::update()
 			if (pawn->hasAttackingPawn(matpawn) && pawn->getTeam() == 1) {//place all blue pawns that can attack in a list
 				m_att_pawns.push_back(pawn);
 			}
+			if (pawn->hasAttacked() == true) { m_att_pawns.clear(); m_att_pawns.push_back(pawn); break; }
 		}
 		for (auto p : m_att_pawns) {
 			if (p->contains(mx, my)) {
@@ -367,6 +370,7 @@ void Game::update()
 			m_moves.clear();
 			cur_pawn->setActive(false);
 			cur_pawn->setHighlight(false);// pawn moved
+			cur_pawn->Attacked(true);//the pawn has attacked, it may have multiple moves
 			if (cur_pawn->getMatposX() > attmove) { right = true; }//attacked right
 			else { left = true; }//attacked left
 			if (right) {
@@ -389,6 +393,8 @@ void Game::update()
 					++it;
 				}
 			}
+			if (cur_pawn->hasAttackingPawn(matpawn)) { m_state = STATE_ATTACKR; }
+			else { cur_pawn->Attacked(false); m_state = STATE_BLUE; }
 		}
 	}
 	else if (m_state == STATE_CHOOSE_ATTACKMOVEB) {//blue chooses move to attack
@@ -415,6 +421,7 @@ void Game::update()
 			m_moves.clear();
 			cur_pawn->setActive(false);
 			cur_pawn->setHighlight(false);//pawn moved
+			cur_pawn->Attacked(true);//pawn has attacked, may have multiple moves
 			if (cur_pawn->getMatposX() > attmove) { right = true; }//attacked right
 			else { left = true; }//attacked left
 			if (right) {
@@ -437,6 +444,8 @@ void Game::update()
 					++it;
 				}
 			}
+			if (cur_pawn->hasAttackingPawn(matpawn)) { m_state = STATE_ATTACKB; }
+			else { cur_pawn->Attacked(false); m_state = STATE_RED; }
 		}
 	}
 }

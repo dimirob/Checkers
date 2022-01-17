@@ -14,6 +14,7 @@ public:
 	float matry[8] { CANVAS_HEIGHT / 1.07f,CANVAS_HEIGHT / 1.235f,CANVAS_HEIGHT / 1.46f,CANVAS_HEIGHT / 1.78f,CANVAS_HEIGHT / 2.28f,CANVAS_HEIGHT / 3.21f,CANVAS_HEIGHT / 5.28f,CANVAS_HEIGHT / 16.0f };
 	Pawn*  matpawn[8][8];
 protected:
+	bool multatt = false;//check for multiple attacks
 	enum m_state;
 	static Game* m_instance;
 	std::list<Pawn*> m_pawns;
