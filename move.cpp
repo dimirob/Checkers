@@ -6,6 +6,7 @@ void Move::draw()
 {
 	graphics::Brush br;
 	float h = 1.0f * m_highlight;
+	
 	SETCOLOR(br.fill_color, h, h, h);
 	br.outline_opacity = 1.0f * m_active;
 	graphics::drawDisk(pos[0], pos[1], MOVE_SIZE+0.05f, br);

@@ -23,7 +23,7 @@
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{24051a69-363a-4af1-9c8d-d7d54c3aeb12}</ProjectGuid>
     <RootNamespace>Checkers</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -149,18 +149,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="checker.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="move.cpp" />
     <ClCompile Include="pawn.cpp" />
-    <ClCompile Include="util.cpp" />
+    <ClCompile Include="temp_del.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="checker.h" />
     <ClInclude Include="defines.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="move.h" />
     <ClInclude Include="pawn.h" />
-    <ClInclude Include="util.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

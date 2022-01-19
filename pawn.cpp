@@ -11,6 +11,7 @@ void Pawn::draw()
 	SETCOLOR(br.fill_color, h, h, h);
 	br.outline_opacity = 1.0f * m_active;
 	graphics::drawDisk(m_pos[0], m_pos[1], PL_DISK_SIZE, br);
+	
 	SETCOLOR(br.fill_color, m_color[0], m_color[1], m_color[2]);
 	br.outline_opacity = 0.0f;
 	br.texture = ASSET_PATH + std::string("Pawn.png");
