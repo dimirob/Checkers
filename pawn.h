@@ -1,22 +1,42 @@
 #pragma once
 #include "move.h"
+#include "defines.h"
+#include <sgg/graphics.h>
+
 class Pawn {
-	float m_pos[2];
-	int m_matpos[2];
+protected:
+	float m_pos[2]; // thesis ston kamva(float)
+	int m_matpos[2]; // thesis ston kamva(int)
 	float m_color[3];
-	int team;
+	int team; // omada 0 = red, 1 = mple
 	bool m_highlighted = false;
 	bool m_active = false;
-	bool attacked=false;//pawn has been moved
-	int movelx;
-	int movely;
-	int moverx;
-	int movery;
+	bool moved=false;//pawn has been moved
+	int movelx; // aristera x
+	int movely; // aristera y 
+	int moverx; // deksia x
+	int movery; // deksia y
+
 
 public:
-	void draw();
+	virtual void draw()
+	{
+		graphics::Brush br;
+		float h = 1.0f * m_highlighted;
+
+		SETCOLOR(br.fill_color, h, h, h);
+		br.outline_opacity = 1.0f * m_active;
+		graphics::drawDisk(m_pos[0], m_pos[1], PL_DISK_SIZE, br);
+
+		SETCOLOR(br.fill_color, m_color[0], m_color[1], m_color[2]);
+		br.outline_opacity = 0.0f;
+		br.texture = ASSET_PATH + std::string("Pawn.png");
+		graphics::drawRect(m_pos[0], m_pos[1], PLAYER_SIZE, PLAYER_SIZE, br);
+	}
+
 	void update();
 	Pawn(int team,int x,int y);
+	float getm_color(int i) { return m_color[i]; }
 	float getPosX() { return m_pos[0]; }
 	float getPosY() { return m_pos[1]; }
 	int getMatposX() { return m_matpos[0]; }
@@ -25,12 +45,13 @@ public:
 	void setPosY(float y) { m_pos[1] = y; }
 	void setMatposx(int x) { m_matpos[0] = x; }
 	void setMatposy(int y) { m_matpos[1] = y; }
+	bool getHighlighted() { return m_highlighted; }
 	void setHighlight(bool h) { m_highlighted = h; }
+	bool getM_active() { return m_active; }
 	void setActive(bool a) { m_active = a; }
 	bool contains(float x, float y);
 	int getTeam();
-	void Attacked(bool n);//pawn has been attacked
-	bool hasAttacked() {return this->attacked; }
+	void gotMoved();//pawn has been moved
 	int getmoveRx() { return moverx; };//get right move x
 	int getmoveRy() { return movery; };//get right move y
 	int getmoveLx() { return movelx; };//get left move x

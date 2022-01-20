@@ -1,21 +1,35 @@
 #include "game.h"
 #include "defines.h"
 #include <sgg/graphics.h>
+#include <typeinfo>
+#include <iostream>
+#include <string>
+
 Game::Game()
 {
 }
+
 void Game::draw()
 {
 	graphics::Brush br;
 	br.outline_opacity = 0.0f;
 	br.texture = ASSET_PATH + std::string("Board.png");
 	graphics::drawRect(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, CANVAS_WIDTH, CANVAS_HEIGHT, br);
-	for (auto pawn : m_pawns) {
+	/*for (auto pawn : m_pawns) {
 		pawn->draw();
+	}*/
+	
+	for (auto pawn : m_pawns)
+	{
+		pawn->draw();
+		std::cout << (std::string)typeid(pawn).name() << std::endl;
+		
 	}
+
 	for (auto move : m_moves) {
 		move->draw();
 	}
+
 }
 
 Game* Game::getInstance()
@@ -48,6 +62,61 @@ bool Game::isLeftSide(int x)
 
 void Game::update()
 { 
+	//del
+	// kanontas hover, tiponei tis thesis tous:
+	/*for (auto pawn : m_pawns)
+	{
+		if (pawn->getHighlighted() == true)
+		{
+			
+			std::cout << pawn->getPosX() << ", " << pawn->getPosY() << std::endl;
+		}
+	}*/ // tipoma thesewn me hover
+	
+
+	// pote o mple ftasei sthn allh meria:
+	/*for (auto pawn : m_pawns)
+	{
+		if (pawn->getPosY() > CANVAS_HEIGHT / 1.1f && pawn->getTeam() == 1)
+		{
+			std::cout << "o mple phge apenanti" << std::endl;
+			
+		}
+	}*/ // allh meria to mple
+
+	// pote o kokkinos paei sthn allh meria
+	for (auto pawn : m_pawns) // na paei kapou allou giati arkei llio na kamei hover
+	{
+		
+		if (pawn->getPosY() < 1.1f && pawn->getTeam() == 0) // getMatposx()
+		{
+			std::cout << "o kokkinos phge apenanti" << std::endl;
+			
+			Checker* p = (Checker*)pawn;
+			p->setPosX(pawn->getPosX());
+			p->setPosY(pawn->getPosY());
+
+			std::list<Pawn*>::iterator temp;
+			it = m_pawns.begin();
+			while (it != m_pawns.end())
+			{
+				if ((*it)->getMatposX() == pawn->getPosX())
+				{
+					m_pawns.erase(it); //erase enemy pawn
+					matpawn[pawn->getMatposX()][pawn->getMatposY()] = p;
+					break;
+				}
+				++it;
+			}
+			// m_pawns.push_front((Checker*)p);
+			// m_pawns.push_front(p);
+			p->draw();
+
+			// dame, me vash th thesi na kamnw delete to pawn pou th lista j delete gia th mnimi
+		}
+	} // allh meria tou kokkinou
+
+	//del
 
 	for (auto pawn : m_pawns) {
 		pawn->update();
@@ -57,11 +126,11 @@ void Game::update()
 	}
 	for (auto pawn : m_pawns) {
 		bool canattack = pawn->hasAttackingPawn(matpawn);
-		if((canattack && pawn->getTeam()==0&&m_state==STATE_RED)) {//red pawn can attack and it is its turn
+		if (canattack && pawn->getTeam()==0 && m_state==STATE_RED) {//red pawn can attack and it is its turn
 			m_state = STATE_ATTACKR;
 
 		}
-		else if ((canattack && pawn->getTeam() == 1&&m_state==STATE_BLUE)) {//blue pawn can attack and it is its turn
+		else if (canattack && pawn->getTeam() == 1 && m_state==STATE_BLUE) {//blue pawn can attack and it is its turn
 			m_state = STATE_ATTACKB;
 		}
 		
@@ -248,7 +317,6 @@ void Game::update()
 			if (pawn->hasAttackingPawn(matpawn)&&pawn->getTeam()==0) {//place all red pawns that can attack in a list
 				m_att_pawns.push_back(pawn);
 			}
-			if (pawn->hasAttacked() == true) { m_att_pawns.clear(); m_att_pawns.push_back(pawn); break; }//multiple move
 		}
 		for (auto p : m_att_pawns) {
 			if (p->contains(mx, my)) {
@@ -300,7 +368,6 @@ void Game::update()
 			if (pawn->hasAttackingPawn(matpawn) && pawn->getTeam() == 1) {//place all blue pawns that can attack in a list
 				m_att_pawns.push_back(pawn);
 			}
-			if (pawn->hasAttacked() == true) { m_att_pawns.clear(); m_att_pawns.push_back(pawn); break; }
 		}
 		for (auto p : m_att_pawns) {
 			if (p->contains(mx, my)) {
@@ -370,7 +437,6 @@ void Game::update()
 			m_moves.clear();
 			cur_pawn->setActive(false);
 			cur_pawn->setHighlight(false);// pawn moved
-			cur_pawn->Attacked(true);//the pawn has attacked, it may have multiple moves
 			if (cur_pawn->getMatposX() > attmove) { right = true; }//attacked right
 			else { left = true; }//attacked left
 			if (right) {
@@ -393,8 +459,6 @@ void Game::update()
 					++it;
 				}
 			}
-			if (cur_pawn->hasAttackingPawn(matpawn)) { m_state = STATE_ATTACKR; }
-			else { cur_pawn->Attacked(false); m_state = STATE_BLUE; }
 		}
 	}
 	else if (m_state == STATE_CHOOSE_ATTACKMOVEB) {//blue chooses move to attack
@@ -421,7 +485,6 @@ void Game::update()
 			m_moves.clear();
 			cur_pawn->setActive(false);
 			cur_pawn->setHighlight(false);//pawn moved
-			cur_pawn->Attacked(true);//pawn has attacked, may have multiple moves
 			if (cur_pawn->getMatposX() > attmove) { right = true; }//attacked right
 			else { left = true; }//attacked left
 			if (right) {
@@ -444,8 +507,6 @@ void Game::update()
 					++it;
 				}
 			}
-			if (cur_pawn->hasAttackingPawn(matpawn)) { m_state = STATE_ATTACKB; }
-			else { cur_pawn->Attacked(false); m_state = STATE_RED; }
 		}
 	}
 }

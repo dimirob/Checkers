@@ -27,6 +27,12 @@
     <ClCompile Include="move.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="checker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="temp_del.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="defines.h">
@@ -39,6 +45,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="move.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="checker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

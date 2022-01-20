@@ -3,20 +3,7 @@
 #include "defines.h"
 #include <string>
 
-void Pawn::draw()
-{
-	graphics::Brush br;
-	float h = 1.0f * m_highlighted;
 
-	SETCOLOR(br.fill_color, h, h, h);
-	br.outline_opacity = 1.0f * m_active;
-	graphics::drawDisk(m_pos[0], m_pos[1], PL_DISK_SIZE, br);
-	SETCOLOR(br.fill_color, m_color[0], m_color[1], m_color[2]);
-	br.outline_opacity = 0.0f;
-	br.texture = ASSET_PATH + std::string("Pawn.png");
-	graphics::drawRect(m_pos[0], m_pos[1], PLAYER_SIZE, PLAYER_SIZE, br);
-
-}
 
 void Pawn::update()
 {
@@ -38,6 +25,7 @@ void Pawn::update()
 
 Pawn::Pawn(int team,int x,int y)
 {
+	moved = false;
 	this->team = team;
 	this->setMatposx(x);
 	this->setMatposy(y);
@@ -56,6 +44,7 @@ Pawn::Pawn(int team,int x,int y)
 		movery = getMatposY() - 1;
 	}
 }
+
 bool Pawn::contains(float x, float y)
 {
 	return distance(x, y, m_pos[0], m_pos[1]) < PL_DISK_SIZE; 
@@ -66,19 +55,13 @@ int Pawn::getTeam()
 	return team;
 }
 
-void Pawn::Attacked(bool n)
+void Pawn::gotMoved()
 {
-	this->attacked = n;
+	this->moved = true;
 }
 
 bool Pawn::hasAttackingPawn(Pawn* p_matrix[8][8])
 {
-	if (this->getTeam() == 0 && this->getMatposY() == 6) {//pawn is red and on second to last row
-		return false;
-	}
-	if (this->getTeam() == 1 && this->getMatposY() == 1) {//pawn is blue and on second to last row
-		return false;
-	}
 	if (this->getTeam() == 0)//pawn is red
 	{
 		if (this->getMatposX() == 0)//pawn is left

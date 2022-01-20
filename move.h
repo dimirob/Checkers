@@ -1,4 +1,5 @@
 #pragma once
+
 class Move {
 	float pos[2];
 	float MOVE_SIZE = 0.4f;

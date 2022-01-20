@@ -4,6 +4,8 @@
 #include "pawn.h"
 #include "defines.h"
 #include "move.h"
+#include "checker.h"
+
 class Game
 {
 public:
@@ -12,9 +14,9 @@ public:
 	};//RED TURN, BLUE TURN, RED CHOOSE MOVE,BLUE CHOOSE MOVE, RED MUST ATTACK, BLUE MUST ATTACK,RED CHOOSE ATTACK MOVE.BLUE ATTACK MOVE
 	float matrx[8] { CANVAS_WIDTH / 16.0f,CANVAS_WIDTH / 5.28f,CANVAS_WIDTH / 3.21f,CANVAS_WIDTH / 2.28f,CANVAS_WIDTH / 1.78f,CANVAS_WIDTH / 1.46f,CANVAS_WIDTH / 1.235f,CANVAS_WIDTH / 1.07f };
 	float matry[8] { CANVAS_HEIGHT / 1.07f,CANVAS_HEIGHT / 1.235f,CANVAS_HEIGHT / 1.46f,CANVAS_HEIGHT / 1.78f,CANVAS_HEIGHT / 2.28f,CANVAS_HEIGHT / 3.21f,CANVAS_HEIGHT / 5.28f,CANVAS_HEIGHT / 16.0f };
+	// original: // float matry[8] { CANVAS_HEIGHT / 1.07f,CANVAS_HEIGHT / 1.235f,CANVAS_HEIGHT / 1.46f,CANVAS_HEIGHT / 1.78f,CANVAS_HEIGHT / 2.28f,CANVAS_HEIGHT / 3.21f,CANVAS_HEIGHT / 5.28f,CANVAS_HEIGHT / 16.0f };
 	Pawn*  matpawn[8][8];
 protected:
-	bool multatt = false;//check for multiple attacks
 	enum m_state;
 	static Game* m_instance;
 	std::list<Pawn*> m_pawns;
@@ -23,6 +25,7 @@ protected:
 	std::list<Pawn*>::iterator it;
 	Pawn* m_active_pawn = nullptr;
 	game_state_t m_state;
+
 	
 public:
 	
