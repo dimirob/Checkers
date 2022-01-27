@@ -1,8 +1,9 @@
 #include "game.h"
 #include "defines.h"
 #include <sgg/graphics.h>
+#include "util.h"
 
-#include <iostream>
+#include <iostream> // del
 
 Game::Game()
 {
@@ -12,18 +13,60 @@ void Game::draw()
 {
 	graphics::Brush br;
 	br.outline_opacity = 0.0f;
+	SETCOLOR(br.fill_color, 1.0f, 1.0f, 1.0f);
+
+	if (m_state == STATE_INIT)
+	{
+		graphics::setFont(std::string(ASSET_PATH) + "Partikular.ttf");
+		graphics::drawText(CANVAS_WIDTH / 4, CANVAS_HEIGHT / 2, 1.5f, "Loading assets...", br);
+		m_state = STATE_LOADING;
+		return;
+	}
+
+	if (m_state == STATE_START_SCREEN)
+	{
+		graphics::Brush br;
+		br.texture = std::string(ASSET_PATH) + "start.png";
+		br.outline_opacity = 0.0f;
+		graphics::drawRect(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, CANVAS_WIDTH, CANVAS_HEIGHT, br);
+
+		drawText();
+		return;
+	}
+
+	if (m_state == STATE_LAST_SCREEN)
+	{
+		br.texture = std::string(ASSET_PATH) + "last.png";
+		br.outline_opacity = 0.0f;
+		graphics::drawRect(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, CANVAS_WIDTH, CANVAS_HEIGHT, br);
+		
+		
+		graphics::setFont(std::string(ASSET_PATH) + "Partikular.ttf");
+		
+		if (redPawns0 == 0) {
+			SETCOLOR(br.fill_color, 0.0f, 0.0f, 1.0f); // rgb
+			graphics::drawText(CANVAS_WIDTH / 11, CANVAS_HEIGHT / 9, 1.2f, "BLUE TEAM WON THE GAME", br);
+		}
+		if (bluePawns1 == 0) {
+			SETCOLOR(br.fill_color, 1.0f, 0.0f, 0.0f); // rgb
+			graphics::drawText(CANVAS_WIDTH / 11, CANVAS_HEIGHT / 9, 1.2f, "RED TEAM WON THE GAME", br);
+		}
+		
+		SETCOLOR(br.fill_color, 1.0f, 1.0f, 1.0f);
+		
+		return;
+	}
+
+	
+	br.outline_opacity = 0.0f;
 	br.texture = ASSET_PATH + std::string("Board.png");
 	graphics::drawRect(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, CANVAS_WIDTH, CANVAS_HEIGHT, br);
 	for (auto pawn : m_pawns) {
 		pawn->draw();
 	}
-	for (auto c : m_checkers) {
-		c->draw();
-	}
 	for (auto move : m_moves) {
 		move->draw();
 	}
-
 }
 
 Game* Game::getInstance()
@@ -56,77 +99,63 @@ bool Game::isLeftSide(int x)
 
 void Game::update()
 { 
-	//del
-	// kanontas hover, tiponei tis thesis tous:
-	/*for (auto pawn : m_pawns)
+	// del
+	std::cout << "red: " << redPawns0 << "\nblue: " << bluePawns1 << std::endl;
+	// _____del
+
+	if (m_state == STATE_INIT)
 	{
-		if (pawn->getHighlighted() == true)
-		{
-			
-			std::cout << pawn->getPosX() << ", " << pawn->getPosY() << std::endl;
-		}
-	}*/ // tipoma thesewn me hover
-	
+		return;
+	}
 
-	// pote o mple ftasei sthn allh meria:
-	/*for (auto pawn : m_pawns)
+	if (m_state == STATE_LOADING)
 	{
-		if (pawn->getPosY() > CANVAS_HEIGHT / 1.1f && pawn->getTeam() == 1)
-		{
-			std::cout << "o mple phge apenanti" << std::endl;
-			
-		}
-	}*/ // allh meria to mple
+		// init();
+		m_state = STATE_START_SCREEN;
+		return;
+	}
 
-	// pote o kokkinos paei sthn allh meria
-	for (auto pawn : m_pawns) // na paei kapou allou giati arkei llio na kamei hover
+	if (m_state == STATE_START_SCREEN)
 	{
-		
-		if (pawn->getPosY() < 1.1f && pawn->getTeam() == 0) // setMatposx()
+		if (graphics::getKeyState(graphics::SCANCODE_SPACE))
 		{
-			std::cout << "o kokkinos phge apenanti" << std::endl;
-			
-			Checker* p = new Checker(pawn->getTeam(), pawn->getPosX(), pawn->getPosY());
-			m_checkers.push_front(p);
-			p->setPosX(pawn->getPosX());
-			p->setPosY(pawn->getPosY());
-
-			std::list<Pawn*>::iterator temp;
-			it = m_pawns.begin();
-			while (it != m_pawns.end())
-			{
-				if ((*it)->getMatposX() == pawn->getPosX())
-				{
-					m_pawns.erase(it); //erase enemy pawn
-					matpawn[pawn->getMatposX() - 1][pawn->getMatposY() - 1] = nullptr;
-					break;
-				}
-				++it;
-			}
-			p->draw();
-
-			// dame, me vash th thesi na kamnw delete to pawn pou th lista j delete gia th mnimi
+			init();
+			m_state = STATE_BLUE;
 		}
-	} // allh meria tou kokkinou
+		return;
+	}
 
-	//del
+	if (m_state == STATE_LAST_SCREEN)
+	{
+		if (graphics::getKeyState(graphics::SCANCODE_R))
+		{
+			m_state = STATE_START_SCREEN;
+			m_pawns.clear();
+		}
+		return;
+	}
+
+	// check for winner
+	if (redPawns0 == 0 || bluePawns1 == 0)
+	{
+		m_state = STATE_LAST_SCREEN;
+		return;
+	}
+
 
 	for (auto pawn : m_pawns) {
 		pawn->update();
-	}
-	for (auto c : m_checkers) {
-		c->update();
 	}
 	for (auto moves : m_moves) {
 		moves->update();
 	}
 	for (auto pawn : m_pawns) {
 		bool canattack = pawn->hasAttackingPawn(matpawn);
-		if (canattack && pawn->getTeam()==0&&m_state==STATE_RED) {//red pawn can attack and it is its turn
+		if((canattack && pawn->getTeam()==0&&m_state==STATE_RED)) {//red pawn can attack and it is its turn
 			m_state = STATE_ATTACKR;
 
 		}
-		else if (canattack && pawn->getTeam() == 1&&m_state==STATE_BLUE) {//blue pawn can attack and it is its turn
+		else if ((canattack && pawn->getTeam() == 1&&m_state==STATE_BLUE)) {//blue pawn can attack and it is its turn
 			m_state = STATE_ATTACKB;
 		}
 		
@@ -313,6 +342,7 @@ void Game::update()
 			if (pawn->hasAttackingPawn(matpawn)&&pawn->getTeam()==0) {//place all red pawns that can attack in a list
 				m_att_pawns.push_back(pawn);
 			}
+			if (pawn->hasAttacked() == true) { m_att_pawns.clear(); m_att_pawns.push_back(pawn); break; }//multiple move
 		}
 		for (auto p : m_att_pawns) {
 			if (p->contains(mx, my)) {
@@ -364,6 +394,7 @@ void Game::update()
 			if (pawn->hasAttackingPawn(matpawn) && pawn->getTeam() == 1) {//place all blue pawns that can attack in a list
 				m_att_pawns.push_back(pawn);
 			}
+			if (pawn->hasAttacked() == true) { m_att_pawns.clear(); m_att_pawns.push_back(pawn); break; }
 		}
 		for (auto p : m_att_pawns) {
 			if (p->contains(mx, my)) {
@@ -433,12 +464,14 @@ void Game::update()
 			m_moves.clear();
 			cur_pawn->setActive(false);
 			cur_pawn->setHighlight(false);// pawn moved
+			cur_pawn->Attacked(true);//the pawn has attacked, it may have multiple moves
 			if (cur_pawn->getMatposX() > attmove) { right = true; }//attacked right
 			else { left = true; }//attacked left
 			if (right) {
 				while (it != m_pawns.end()) {
 					if (*it == matpawn[cur_pawn->getMatposX() - 1][cur_pawn->getMatposY() - 1]) {
 						m_pawns.erase(it); //erase enemy pawn
+						bluePawns1--;
 						matpawn[cur_pawn->getMatposX() - 1][cur_pawn->getMatposY() - 1] = nullptr;
 						break;
 					}
@@ -449,12 +482,15 @@ void Game::update()
 				while (it != m_pawns.end()) {
 					if (*it == matpawn[cur_pawn->getMatposX() + 1][cur_pawn->getMatposY() - 1]) {
 						m_pawns.erase(it);  //erase enemy pawn
+						bluePawns1--;
 						matpawn[cur_pawn->getMatposX() + 1][cur_pawn->getMatposY() - 1] = nullptr;
 						break;
 					}
 					++it;
 				}
 			}
+			if (cur_pawn->hasAttackingPawn(matpawn)) { m_state = STATE_ATTACKR; }
+			else { cur_pawn->Attacked(false); m_state = STATE_BLUE; }
 		}
 	}
 	else if (m_state == STATE_CHOOSE_ATTACKMOVEB) {//blue chooses move to attack
@@ -481,12 +517,14 @@ void Game::update()
 			m_moves.clear();
 			cur_pawn->setActive(false);
 			cur_pawn->setHighlight(false);//pawn moved
+			cur_pawn->Attacked(true);//pawn has attacked, may have multiple moves
 			if (cur_pawn->getMatposX() > attmove) { right = true; }//attacked right
 			else { left = true; }//attacked left
 			if (right) {
 				while (it != m_pawns.end()) {
 					if (*it == matpawn[cur_pawn->getMatposX() - 1][cur_pawn->getMatposY() + 1]) {
 						m_pawns.erase(it); //erase enemy pawn
+						redPawns0--;
 						matpawn[cur_pawn->getMatposX() - 1][cur_pawn->getMatposY() + 1] = nullptr;
 						break;
 					}
@@ -497,19 +535,21 @@ void Game::update()
 				while (it != m_pawns.end()) {
 					if (*it == matpawn[cur_pawn->getMatposX() + 1][cur_pawn->getMatposY() + 1]) {
 						m_pawns.erase(it); //erase enemy pawn
+						redPawns0--;
 						matpawn[cur_pawn->getMatposX() + 1][cur_pawn->getMatposY() + 1] = nullptr;
 						break;
 					}
 					++it;
 				}
 			}
+			if (cur_pawn->hasAttackingPawn(matpawn)) { m_state = STATE_ATTACKB; }
+			else { cur_pawn->Attacked(false); m_state = STATE_RED; }
 		}
 	}
 }
 
 void Game::init()
 {
-	m_state = STATE_BLUE;
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
 			matpawn[i][j] = nullptr;
@@ -519,6 +559,7 @@ void Game::init()
 			for (int j = 0; j < 3; j=j+2) {
 				Pawn* p = new Pawn(0,i,j);
 				m_pawns.push_front(p);
+				redPawns0++;
 				p->setPosX(matrx[i]);
 				p->setPosY(matry[j]);
 				matpawn[i][j] = p;//update pawn matrix
@@ -527,6 +568,7 @@ void Game::init()
 		for (int i = 1; i <= 8; i = i + 2) {
 			Pawn* p = new Pawn(0,i,1);
 			m_pawns.push_front(p);
+			redPawns0++;
 			p->setPosX(matrx[i]);
 			p->setPosY(matry[1]);
 			matpawn[i][1] = p;//update pawn matrix
@@ -535,6 +577,7 @@ void Game::init()
 			for (int j = 7; j >4; j = j - 2) {
 				Pawn* p = new Pawn(1, i, j);
 				m_pawns.push_front(p);
+				bluePawns1++;
 				p->setPosX(matrx[i]);
 				p->setPosY(matry[j]);
 				matpawn[i][j] = p;//update pawn matrix
@@ -543,10 +586,14 @@ void Game::init()
 		for (int i = 0; i < 8; i = i + 2) {
 			Pawn* p = new Pawn(1,i,6);
 			m_pawns.push_front(p);
+			bluePawns1++;
 			p->setPosX(matrx[i]);
 			p->setPosY(matry[6]);
 			matpawn[i][6] = p;//update pawn matrix
 		}
+
+		graphics::preloadBitmaps(ASSET_PATH);
+		sleep(2000);
 }
 
 Game::~Game()
@@ -556,13 +603,6 @@ Game::~Game()
 		delete p;
 	}
 	m_pawns.clear();
-
-	// for checkers
-	for (auto c : m_checkers)
-	{
-		delete c;
-	}
-	m_checkers.clear();
 }
 
 void Game::releaseInstance()
