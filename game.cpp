@@ -1,12 +1,63 @@
 #include "game.h"
 #include "defines.h"
 #include <sgg/graphics.h>
+#include "util.h"
+
+#include <iostream> // del
+
 Game::Game()
 {
 }
+
 void Game::draw()
 {
 	graphics::Brush br;
+	br.outline_opacity = 0.0f;
+	SETCOLOR(br.fill_color, 1.0f, 1.0f, 1.0f);
+
+	if (m_state == STATE_INIT)
+	{
+		graphics::setFont(std::string(ASSET_PATH) + "Partikular.ttf");
+		graphics::drawText(CANVAS_WIDTH / 4, CANVAS_HEIGHT / 2, 1.5f, "Loading assets...", br);
+		m_state = STATE_LOADING;
+		return;
+	}
+
+	if (m_state == STATE_START_SCREEN)
+	{
+		graphics::Brush br;
+		br.texture = std::string(ASSET_PATH) + "start.png";
+		br.outline_opacity = 0.0f;
+		graphics::drawRect(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, CANVAS_WIDTH, CANVAS_HEIGHT, br);
+
+		drawText();
+		return;
+	}
+
+	if (m_state == STATE_LAST_SCREEN)
+	{
+		br.texture = std::string(ASSET_PATH) + "last.png";
+		br.outline_opacity = 0.0f;
+		graphics::drawRect(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, CANVAS_WIDTH, CANVAS_HEIGHT, br);
+		
+		
+		graphics::setFont(std::string(ASSET_PATH) + "Partikular.ttf");
+		
+		if (redPawns0 == 0) {
+			SETCOLOR(br.fill_color, 0.0f, 0.0f, 1.0f); // rgb
+			graphics::drawText(CANVAS_WIDTH / 11, CANVAS_HEIGHT / 9, 1.2f, "BLUE TEAM WON THE GAME", br);
+		}
+		if (bluePawns1 == 0) {
+			SETCOLOR(br.fill_color, 1.0f, 0.0f, 0.0f); // rgb
+			graphics::drawText(CANVAS_WIDTH / 11, CANVAS_HEIGHT / 9, 1.2f, "RED TEAM WON THE GAME", br);
+		}
+		
+		SETCOLOR(br.fill_color, 1.0f, 1.0f, 1.0f);
+		
+		return;
+	}
+
+	
 	br.outline_opacity = 0.0f;
 	br.texture = ASSET_PATH + std::string("Board.png");
 	graphics::drawRect(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, CANVAS_WIDTH, CANVAS_HEIGHT, br);
@@ -48,6 +99,49 @@ bool Game::isLeftSide(int x)
 
 void Game::update()
 { 
+	// del
+	std::cout << "red: " << redPawns0 << "\nblue: " << bluePawns1 << std::endl;
+	// _____del
+
+	if (m_state == STATE_INIT)
+	{
+		return;
+	}
+
+	if (m_state == STATE_LOADING)
+	{
+		// init();
+		m_state = STATE_START_SCREEN;
+		return;
+	}
+
+	if (m_state == STATE_START_SCREEN)
+	{
+		if (graphics::getKeyState(graphics::SCANCODE_SPACE))
+		{
+			init();
+			m_state = STATE_BLUE;
+		}
+		return;
+	}
+
+	if (m_state == STATE_LAST_SCREEN)
+	{
+		if (graphics::getKeyState(graphics::SCANCODE_R))
+		{
+			m_state = STATE_START_SCREEN;
+			m_pawns.clear();
+		}
+		return;
+	}
+
+	// check for winner
+	if (redPawns0 == 0 || bluePawns1 == 0)
+	{
+		m_state = STATE_LAST_SCREEN;
+		return;
+	}
+
 
 	for (auto pawn : m_pawns) {
 		pawn->update();
@@ -377,6 +471,7 @@ void Game::update()
 				while (it != m_pawns.end()) {
 					if (*it == matpawn[cur_pawn->getMatposX() - 1][cur_pawn->getMatposY() - 1]) {
 						m_pawns.erase(it); //erase enemy pawn
+						bluePawns1--;
 						matpawn[cur_pawn->getMatposX() - 1][cur_pawn->getMatposY() - 1] = nullptr;
 						break;
 					}
@@ -387,6 +482,7 @@ void Game::update()
 				while (it != m_pawns.end()) {
 					if (*it == matpawn[cur_pawn->getMatposX() + 1][cur_pawn->getMatposY() - 1]) {
 						m_pawns.erase(it);  //erase enemy pawn
+						bluePawns1--;
 						matpawn[cur_pawn->getMatposX() + 1][cur_pawn->getMatposY() - 1] = nullptr;
 						break;
 					}
@@ -428,6 +524,7 @@ void Game::update()
 				while (it != m_pawns.end()) {
 					if (*it == matpawn[cur_pawn->getMatposX() - 1][cur_pawn->getMatposY() + 1]) {
 						m_pawns.erase(it); //erase enemy pawn
+						redPawns0--;
 						matpawn[cur_pawn->getMatposX() - 1][cur_pawn->getMatposY() + 1] = nullptr;
 						break;
 					}
@@ -438,6 +535,7 @@ void Game::update()
 				while (it != m_pawns.end()) {
 					if (*it == matpawn[cur_pawn->getMatposX() + 1][cur_pawn->getMatposY() + 1]) {
 						m_pawns.erase(it); //erase enemy pawn
+						redPawns0--;
 						matpawn[cur_pawn->getMatposX() + 1][cur_pawn->getMatposY() + 1] = nullptr;
 						break;
 					}
@@ -452,7 +550,6 @@ void Game::update()
 
 void Game::init()
 {
-	m_state = STATE_BLUE;
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
 			matpawn[i][j] = nullptr;
@@ -462,6 +559,7 @@ void Game::init()
 			for (int j = 0; j < 3; j=j+2) {
 				Pawn* p = new Pawn(0,i,j);
 				m_pawns.push_front(p);
+				redPawns0++;
 				p->setPosX(matrx[i]);
 				p->setPosY(matry[j]);
 				matpawn[i][j] = p;//update pawn matrix
@@ -470,6 +568,7 @@ void Game::init()
 		for (int i = 1; i <= 8; i = i + 2) {
 			Pawn* p = new Pawn(0,i,1);
 			m_pawns.push_front(p);
+			redPawns0++;
 			p->setPosX(matrx[i]);
 			p->setPosY(matry[1]);
 			matpawn[i][1] = p;//update pawn matrix
@@ -478,6 +577,7 @@ void Game::init()
 			for (int j = 7; j >4; j = j - 2) {
 				Pawn* p = new Pawn(1, i, j);
 				m_pawns.push_front(p);
+				bluePawns1++;
 				p->setPosX(matrx[i]);
 				p->setPosY(matry[j]);
 				matpawn[i][j] = p;//update pawn matrix
@@ -486,10 +586,14 @@ void Game::init()
 		for (int i = 0; i < 8; i = i + 2) {
 			Pawn* p = new Pawn(1,i,6);
 			m_pawns.push_front(p);
+			bluePawns1++;
 			p->setPosX(matrx[i]);
 			p->setPosY(matry[6]);
 			matpawn[i][6] = p;//update pawn matrix
 		}
+
+		graphics::preloadBitmaps(ASSET_PATH);
+		sleep(2000);
 }
 
 Game::~Game()
