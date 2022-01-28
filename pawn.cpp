@@ -38,7 +38,6 @@ void Pawn::update()
 
 Pawn::Pawn(int team,int x,int y)
 {
-	moved = false;
 	this->team = team;
 	this->setMatposx(x);
 	this->setMatposy(y);
@@ -67,13 +66,19 @@ int Pawn::getTeam()
 	return team;
 }
 
-void Pawn::gotMoved()
+void Pawn::Attacked(bool n)
 {
-	this->moved = true;
+	this->attacked = n;
 }
 
 bool Pawn::hasAttackingPawn(Pawn* p_matrix[8][8])
 {
+	if (this->getTeam() == 0 && this->getMatposY() == 6) {//pawn is red and on second to last row
+		return false;
+	}
+	if (this->getTeam() == 1 && this->getMatposY() == 1) {//pawn is blue and on second to last row
+		return false;
+	}
 	if (this->getTeam() == 0)//pawn is red
 	{
 		if (this->getMatposX() == 0)//pawn is left

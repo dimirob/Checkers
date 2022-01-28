@@ -7,7 +7,7 @@ class Pawn {
 	int team;
 	bool m_highlighted = false;
 	bool m_active = false;
-	bool moved=false;//pawn has been moved
+	bool attacked=false;//pawn has been moved
 	int movelx;
 	int movely;
 	int moverx;
@@ -29,7 +29,8 @@ public:
 	void setActive(bool a) { m_active = a; }
 	bool contains(float x, float y);
 	int getTeam();
-	void gotMoved();//pawn has been moved
+	void Attacked(bool n);//pawn has been attacked
+	bool hasAttacked() {return this->attacked; }
 	int getmoveRx() { return moverx; };//get right move x
 	int getmoveRy() { return movery; };//get right move y
 	int getmoveLx() { return movelx; };//get left move x
@@ -38,5 +39,7 @@ public:
 	bool canMove(Pawn* p_matrix[8][8]);
 	Move* getAttMoveR();//gives attacking move from right
 	Move* getAttMoveL();//gives attacking move from left
+	bool operator ==(Pawn* p) { return this->getPosX() == p->getPosX() && this->getPosY() == p->getPosY(); }
+	bool operator !=(Pawn* p) { return this->getPosX() != p->getPosX() || this->getPosY() != p->getPosY(); }
 	
 };
