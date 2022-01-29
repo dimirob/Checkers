@@ -39,6 +39,7 @@ public:
 	bool canMove(Pawn* p_matrix[8][8]);
 	Move* getAttMoveR();//gives attacking move from right
 	Move* getAttMoveL();//gives attacking move from left
+	bool isQueen() { return false; }
 	bool operator ==(Pawn* p) { return this->getPosX() == p->getPosX() && this->getPosY() == p->getPosY(); }
 	bool operator !=(Pawn* p) { return this->getPosX() != p->getPosX() || this->getPosY() != p->getPosY(); }
 	

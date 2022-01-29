@@ -1,6 +1,7 @@
 #include "game.h"
 #include "defines.h"
 #include <sgg/graphics.h>
+#include "queen.h"
 Game::Game()
 {
 }
@@ -48,9 +49,23 @@ bool Game::isLeftSide(int x)
 
 void Game::update()
 { 
-
 	for (auto pawn : m_pawns) {
 		pawn->update();
+		if (pawn->getMatposY() == 7 && pawn->getTeam() == 0) {
+			std::cout << "Pawn has reached";
+			Queen* q = new Queen(pawn->getTeam(), pawn->getMatposX(), pawn->getMatposY());
+			while (it != m_pawns.end()) {
+				if (*it == matpawn[pawn->getMatposX()][pawn->getMatposY()]) {
+					m_pawns.erase(it); //pawn
+					m_pawns.push_back(q);
+					matpawn[pawn->getMatposX()][pawn->getMatposY()] = q;
+					q->setPosX(matrx[q->getMatposX()]);
+					q->setPosY(matry[q->getMatposY()]);
+					break;
+				}
+				++it;
+			}
+		}
 	}
 	for (auto moves : m_moves) {
 		moves->update();

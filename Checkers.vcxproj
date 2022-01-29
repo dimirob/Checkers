@@ -153,10 +153,12 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="move.cpp" />
     <ClCompile Include="pawn.cpp" />
+    <ClCompile Include="queen.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="defines.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="queen.h" />
     <ClInclude Include="move.h" />
     <ClInclude Include="pawn.h" />
   </ItemGroup>
