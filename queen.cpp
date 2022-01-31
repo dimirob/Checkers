@@ -81,12 +81,12 @@ bool Queen::hasAttackingPawn(Pawn* p_matrix[8][8])
 		
 		if (left || right) { //has enemy pawn in diagonal
 			if ((p_matrix[posx + 1][posy - 1] == nullptr) && right) {//has attacking place in board
-				std::cout << "attacking right";
+				
 				return true;
 				
 			}
 			if (p_matrix[posx2 - 1][posy2 - 1] == nullptr && left) {//has attacking place in board
-				std::cout << "attacking left";
+				
 				return true;
 				
 			}
