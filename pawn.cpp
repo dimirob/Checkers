@@ -38,6 +38,7 @@ void Pawn::update()
 
 Pawn::Pawn(int team,int x,int y)
 {
+	this->isqueen = false;
 	this->team = team;
 	this->setMatposx(x);
 	this->setMatposy(y);
@@ -220,3 +221,9 @@ Move* Pawn::getAttMoveL()
 	}
 	return move;
 }
+
+bool Pawn::isQueen()
+{
+	return this->isqueen;
+}
+

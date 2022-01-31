@@ -1,6 +1,8 @@
 #pragma once
 #include "move.h"
 class Pawn {
+protected:
+	bool isqueen;
 	float m_pos[2];
 	int m_matpos[2];
 	float m_color[3];
@@ -14,8 +16,8 @@ class Pawn {
 	int movery;
 
 public:
-	void draw();
-	void update();
+	virtual void draw();
+	virtual void update();
 	Pawn(int team,int x,int y);
 	float getPosX() { return m_pos[0]; }
 	float getPosY() { return m_pos[1]; }
@@ -27,7 +29,7 @@ public:
 	void setMatposy(int y) { m_matpos[1] = y; }
 	void setHighlight(bool h) { m_highlighted = h; }
 	void setActive(bool a) { m_active = a; }
-	bool contains(float x, float y);
+	virtual bool contains(float x, float y);
 	int getTeam();
 	void Attacked(bool n);//pawn has been attacked
 	bool hasAttacked() {return this->attacked; }
@@ -35,11 +37,11 @@ public:
 	int getmoveRy() { return movery; };//get right move y
 	int getmoveLx() { return movelx; };//get left move x
 	int getmoveLy() { return movely; };//get left move y
-	bool hasAttackingPawn(Pawn* p_matrix[8][8]);//checks if it has a pawn that it can attack
-	bool canMove(Pawn* p_matrix[8][8]);
+	virtual bool hasAttackingPawn(Pawn* p_matrix[8][8]);//checks if it has a pawn that it can attack
+	virtual bool canMove(Pawn* p_matrix[8][8]);
 	Move* getAttMoveR();//gives attacking move from right
 	Move* getAttMoveL();//gives attacking move from left
-	bool isQueen() { return false; }
+	bool isQueen();
 	bool operator ==(Pawn* p) { return this->getPosX() == p->getPosX() && this->getPosY() == p->getPosY(); }
 	bool operator !=(Pawn* p) { return this->getPosX() != p->getPosX() || this->getPosY() != p->getPosY(); }
 	

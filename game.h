@@ -4,6 +4,7 @@
 #include "pawn.h"
 #include "defines.h"
 #include "move.h"
+#include "queen.h"
 class Game
 {
 public:
@@ -30,7 +31,7 @@ protected:
 	std::list<Move*> m_moves;
 	std::list<Pawn*>::iterator it;
 	Pawn* m_active_pawn = nullptr;
-	game_state_t m_state = STATE_INIT;
+	game_state_t m_state;
 	
 public:
 	
@@ -48,4 +49,5 @@ public:
 	bool isRightSide(int x);//pawn is on left side
 	bool isLeftSide(int x);//pawn is on right side
 	bool can_attack(Pawn* p);//pawn can attack 
+	void replaceQueen(Pawn* pawn);//upgrade to queen
 };
