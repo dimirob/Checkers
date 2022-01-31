@@ -53,24 +53,28 @@ bool Queen::hasAttackingPawn(Pawn* p_matrix[8][8])
 		int posy = this->getMatposY() + 1;
 		int posx2 = this->getMatposX() - 1;
 		int posy2 = this->getMatposY() + 1;
-		bool right;
-		if (posx == 7) { right = false; }//attacking queen is at the right side of the board
+		bool right=false;
+		if (posx >= 7) { right = false; }//attacking queen is at the right side of the board
 		else {
-			bool right = p_matrix[posx][posy] != nullptr && p_matrix[posx][posy]->getTeam() != getTeam() && !(posx >= 7);//attacking pawn in right diagonal
+			if (p_matrix[posx][posy] != nullptr) {
+				right = p_matrix[posx][posy]->getTeam() != getTeam();//attacking pawn in right diagonal
+			}
 		}
-		bool left;
-		if (posx2 == 0) { left = false; }//attacking queen is at the left side of the board
+		bool left=false;
+		if (posx2 <= 0) { left = false; }//attacking queen is at the left side of the board
 		else {
-			bool left = p_matrix[posx2][posy2] != nullptr && p_matrix[posx2][posy2]->getTeam() != getTeam() && !(posx2 <= 0);//atttacking pawn in left diagonal
+			if (p_matrix[posx2][posy2] != nullptr) {
+				left = p_matrix[posx2][posy2]->getTeam() != getTeam();//atttacking pawn in left diagonal
+			}
 		}
 		if (left || right) {//has enemy pawn in diagonal
 			if (p_matrix[posx + 1][posy + 1] == nullptr && right) {//has attacking place in board
-				std::cout << "attacking right";
+				
 				return true;
 				
 			}
 			if (p_matrix[posx2 - 1][posy2 + 1] == nullptr && left) {//has attacking place in board
-				std::cout << "attacking left";
+				
 				return true;
 				
 			}
@@ -81,9 +85,20 @@ bool Queen::hasAttackingPawn(Pawn* p_matrix[8][8])
 		int posy = this->getMatposY() - 1;
 		int posx2 = this->getMatposX() - 1;
 		int posy2 = this->getMatposY() - 1;
-		bool right = p_matrix[posx][posy] != nullptr && p_matrix[posx][posy]->getTeam() != getTeam() && !(posx >= 7);//attacking move is in left
-		
-		bool left = p_matrix[posx2][posy2] != nullptr && p_matrix[posx2][posy2]->getTeam() != getTeam() && !(posx <= 0);//attacking move is on right
+		bool right = false;
+		if (posx >= 7) { right = false; }
+		else {
+			if (p_matrix[posx][posy] != nullptr) {
+				right = p_matrix[posx][posy]->getTeam() != getTeam();
+			}
+		}
+		bool left = false;
+		if (posx2 <= 0) {left = false;}
+		else {
+			if (p_matrix[posx2][posy2] != nullptr) {
+				left = p_matrix[posx2][posy2]->getTeam() != getTeam();
+			}
+		}
 		
 		if (left || right) { //has enemy pawn in diagonal
 			if ((p_matrix[posx + 1][posy - 1] == nullptr) && right) {//has attacking place in board

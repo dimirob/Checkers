@@ -18,6 +18,7 @@ protected:
 public:
 	virtual void draw();
 	virtual void update();
+	~Pawn();
 	Pawn(int team,int x,int y);
 	float getPosX() { return m_pos[0]; }
 	float getPosY() { return m_pos[1]; }

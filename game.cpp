@@ -2,6 +2,7 @@
 #include "defines.h"
 #include <sgg/graphics.h>
 #include "queen.h"
+#include "util.h"
 Game::Game()
 {
 }
@@ -9,6 +10,41 @@ void Game::draw()
 {
 	graphics::Brush br;
 	br.outline_opacity = 0.0f;
+	SETCOLOR(br.fill_color, 1.0f, 1.0f, 1.0f);
+	if (m_state == STATE_INIT) {
+		graphics::setFont(std::string(ASSET_PATH) + "Partikular.ttf");
+		graphics::drawText(CANVAS_WIDTH / 4, CANVAS_HEIGHT / 2, 1.5f, "Loading assets...", br);
+		m_state = STATE_LOADING;
+		return;
+	}
+	if (m_state == STATE_START_SCREEN) {
+		br.texture = std::string(ASSET_PATH) + "start.png";
+		br.outline_opacity = 0.0f;
+		graphics::drawRect(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, CANVAS_WIDTH, CANVAS_HEIGHT, br);
+		drawText();
+		return;
+	}
+	if (m_state == STATE_LAST_SCREEN) {
+		br.texture = std::string(ASSET_PATH) + "last.png";
+		br.outline_opacity = 0.0f;
+		graphics::drawRect(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, CANVAS_WIDTH, CANVAS_HEIGHT, br);
+
+
+		graphics::setFont(std::string(ASSET_PATH) + "Partikular.ttf");
+
+		if (bluewon) {
+			SETCOLOR(br.fill_color, 0.0f, 0.0f, 1.0f); // rgb
+			graphics::drawText(CANVAS_WIDTH / 11, CANVAS_HEIGHT / 9, 1.2f, "BLUE TEAM WON THE GAME", br);
+		}
+		if (redwon) {
+			SETCOLOR(br.fill_color, 1.0f, 0.0f, 0.0f); // rgb
+			graphics::drawText(CANVAS_WIDTH / 11, CANVAS_HEIGHT / 9, 1.2f, "RED TEAM WON THE GAME", br);
+		}
+
+		SETCOLOR(br.fill_color, 1.0f, 1.0f, 1.0f);
+
+		return;
+	}
 	br.texture = ASSET_PATH + std::string("Board.png");
 	graphics::drawRect(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, CANVAS_WIDTH, CANVAS_HEIGHT, br);
 	for (auto pawn : m_pawns) {
@@ -50,14 +86,37 @@ bool Game::isLeftSide(int x)
 
 void Game::update()
 { 
+	if (m_state == STATE_INIT) {
+		return;
+	}
+	if (m_state == STATE_LOADING) {
+		m_state = STATE_START_SCREEN;
+		return;
+	}
+	if (m_state == STATE_START_SCREEN) {
+		if (graphics::getKeyState(graphics::SCANCODE_SPACE)) {
+			init();
+		}
+		return;
+	}
+	if (m_state == STATE_LAST_SCREEN) {
+		if (graphics::getKeyState(graphics::SCANCODE_R)) {
+			m_state = STATE_START_SCREEN;
+			m_pawns.clear();
+		}
+		return;
+	}
 	it = m_pawns.begin();
 	graphics::MouseState ms;
 	graphics::getMouseState(ms);
 	float mx = graphics::windowToCanvasX(ms.cur_pos_x);
 	float my = graphics::windowToCanvasY(ms.cur_pos_y);
+	bluewon = true;
+	redwon = true;
 	for (auto pawn : m_pawns) {
 		pawn->update();
-		
+		if (pawn->getTeam() == 0) { bluewon = false;}
+		if (pawn->getTeam() == 1) { redwon = false;}
 		if (pawn->getMatposY() == 7 && pawn->getTeam() == 0&&!pawn->isQueen()) {
 			std::cout << "Red pawn has reached";
 			replaceQueen(pawn);
@@ -67,6 +126,8 @@ void Game::update()
 			replaceQueen(pawn);
 		}
 	}
+	if (bluewon) { m_state = STATE_LAST_SCREEN; return;}
+	else if (redwon) { m_state = STATE_LAST_SCREEN; return; }
 	for (auto moves : m_moves) {
 		moves->update();
 	}
@@ -757,7 +818,7 @@ void Game::update()
 
 void Game::init()
 {
-	m_state = STATE_BLUE;
+	m_state = STATE_RED;
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
 			matpawn[i][j] = nullptr;
@@ -795,8 +856,7 @@ void Game::init()
 			p->setPosY(matry[6]);
 			matpawn[i][6] = p;//update pawn matrix
 		}
-	
-	
+		graphics::preloadBitmaps(ASSET_PATH);
 }
 
 Game::~Game()
@@ -806,6 +866,10 @@ Game::~Game()
 		delete p;
 	}
 	m_pawns.clear();
+	for (auto m : m_moves) {
+		delete m;
+	}
+	m_moves.clear();
 }
 
 void Game::releaseInstance()

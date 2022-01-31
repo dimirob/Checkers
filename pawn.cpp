@@ -36,6 +36,10 @@ void Pawn::update()
 	}
 }
 
+Pawn::~Pawn()
+{
+}
+
 Pawn::Pawn(int team,int x,int y)
 {
 	this->isqueen = false;

@@ -24,6 +24,8 @@ public:
 
 protected:
 	bool multatt = false;//check for multiple attacks
+	bool redwon = false;
+	bool bluewon=false;
 	enum m_state;
 	static Game* m_instance;
 	std::list<Pawn*> m_pawns;
@@ -31,7 +33,7 @@ protected:
 	std::list<Move*> m_moves;
 	std::list<Pawn*>::iterator it;
 	Pawn* m_active_pawn = nullptr;
-	game_state_t m_state;
+	game_state_t m_state=STATE_INIT;
 	
 public:
 	

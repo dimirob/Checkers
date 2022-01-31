@@ -20,7 +20,7 @@ int main(int argc, char** argv)
 	graphics::createWindow(1200, 800, "Checkers v0.1");
 
 	Game * game = Game::getInstance();
-	game->init();
+	
 	graphics::setCanvasSize(CANVAS_HEIGHT, CANVAS_HEIGHT);
 	graphics::setCanvasScaleMode(graphics::CANVAS_SCALE_FIT);
 
