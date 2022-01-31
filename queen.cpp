@@ -53,10 +53,16 @@ bool Queen::hasAttackingPawn(Pawn* p_matrix[8][8])
 		int posy = this->getMatposY() + 1;
 		int posx2 = this->getMatposX() - 1;
 		int posy2 = this->getMatposY() + 1;
-		bool right = p_matrix[posx][posy] != nullptr && p_matrix[posx][posy]->getTeam() != getTeam()&&!(posx>=7);//attacking pawn in right diagonal
+		bool right;
 		if (posx == 7) { right = false; }//attacking queen is at the right side of the board
-		bool left = p_matrix[posx2][posy2] != nullptr && p_matrix[posx2][posy2]->getTeam() != getTeam() && !(posx2 <= 0);//atttacking pawn in left diagonal
+		else {
+			bool right = p_matrix[posx][posy] != nullptr && p_matrix[posx][posy]->getTeam() != getTeam() && !(posx >= 7);//attacking pawn in right diagonal
+		}
+		bool left;
 		if (posx2 == 0) { left = false; }//attacking queen is at the left side of the board
+		else {
+			bool left = p_matrix[posx2][posy2] != nullptr && p_matrix[posx2][posy2]->getTeam() != getTeam() && !(posx2 <= 0);//atttacking pawn in left diagonal
+		}
 		if (left || right) {//has enemy pawn in diagonal
 			if (p_matrix[posx + 1][posy + 1] == nullptr && right) {//has attacking place in board
 				std::cout << "attacking right";
